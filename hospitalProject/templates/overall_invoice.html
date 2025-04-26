@@ -1,0 +1,297 @@
+{% comment %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .invoice-box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 80%;
+            margin: auto;
+        }
+        .invo-table{
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-box">
+        <h2>Invoice {{ invoice.invoice_number }}</h2>
+        <p><strong>Customer:</strong> {{ invoice.customer_name }}</p>
+        <p><strong>Date:</strong> {{ invoice.date }}</p>
+        <p><strong>Total Amount:</strong> ${{ invoice.total_amount }}</p>
+    </div>
+</body>
+
+</html> {% endcomment %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Materia - Admin Template">
+    <meta name="keywords" content="materia, webapp, admin, dashboard, template, ui">
+    <meta name="author" content="solutionportal">
+    <!-- <base href="/"> -->
+
+    <title>SSL</title>
+
+  
+	{% load static %}
+	<link rel="icon" type="image/x-icon" href="{% static 'images/ssl_Logo.webp' %}">
+	
+	<!-- Icons -->
+	<link rel="stylesheet" href="{% static 'fonts/ionicons/css/ionicons.min.css' %}">
+	<link rel="stylesheet" href="{% static 'fonts/font-awesome/css/font-awesome.min.css' %}">
+
+	<!-- Plugins -->
+	<link rel="stylesheet" href="{% static 'styles/plugins/waves.css' %}">
+	<link rel="stylesheet" href="{% static 'styles/plugins/perfect-scrollbar.css' %}">
+	
+	<!-- Css/Less Stylesheets -->
+	<link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'styles/main.min.css' %}">
+	<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,300' rel='stylesheet' type='text/css'>
+
+
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        .col-md-6.qrCode{
+            display: flex;
+            align-items:center;
+        }
+
+        .row.total-sum.total-sum2{
+            display:flex;
+            justify-content:end;
+        }
+        .clearfix.invoice-head{
+            display:flex;
+        }
+        .clearfix.invoice-head .head-logo{
+            width:70%;
+        }
+        .clearfix.invoice-head .head-address{
+            width:30%;
+            text-align:end;
+        }
+        .clearfix.invoice-head .estimation-heading{
+            width:70%;
+        }
+        .right thead tr td{
+            padding:10px;
+            text
+        }
+        th{
+            font-size:20px;
+            font-weight:bold;
+        }
+        th td{
+            text-transform: uppercase;
+        }
+    </style>
+
+</head>
+
+<body id="app" class="app off-canvas">
+
+    
+    
+    <div class="page page-invoice">
+        <div class="page-wrap">
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Invoice Start -->
+                    <button class="btn btn-primary mr5" type="submit" id="submitButton"  onclick="window.location.href='{% url "listbill" %}';">&larr; Back To Bills List</button>
+                    {% comment %} <button id="printBill" onclick="printPDF()">Print Bill</button> {% endcomment %}
+                    <a href="#" onclick="printPDF()" id="print" class="btn btn-default"><i class="ion ion ion-archive"></i>Print</a>
+                    <div class="invoice-wrap" id= "content">
+                        <div class="clearfix invoice-head">
+							<span class="head-logo">
+								<img src="{% static 'images/ssl_Logo.webp' %}"  width="200px" alt="">
+							</span>
+
+							<span class="head-address">
+                                <div class="group clearfix right">
+                                    <h3 class="text-uppercase text-muted text-bold mt15">CASH BILL</h3>
+                                    <p class="text-bold mb5">#5/38, SENGUNDHAR STREET PUTTUR.</p>
+                                    <p class="small">Ph. 8498091917</p>
+                                    <p class="small">E-mail: srishanmugamlab@gmail.com</p>
+
+                                </div>
+							</span>
+                            
+                        </div>
+
+                        
+
+                        <div class="row mb30">
+                            {% comment %} <div class="clearfix invoice-subhead mb20 col-md-6 right">
+                                <div class="group clearfix left">
+                                    <h3 class="text-uppercase text-muted text-bold mt15">Estimation</h3>
+                                    <p class="text-bold mb5">Bill No - {{ billId }}</p>
+                                    <p class="small">Date: {{current_date}}</p>
+                                    <div class="group clearfix">
+                                        <a href="#" onclick="downloadPDF()" id="print" class="btn btn-default"><i class="ion ion ion-archive"></i>Download</a>
+                                    </div>
+                                </div>
+    
+                            </div> {% endcomment %}
+                            <div class="col-md-6 left">
+                                <div class="address-wrap">
+                                    <div class="address-title">
+                                        <p class="mb5 mb0"><strong>Bill Id :</strong> {{data.Bill_Id}}</p>
+                                        <p class="mt0 mb0"><strong>Patient Name :</strong> {{data.Title}}.{{data.Name}} {{data.Last_Name}}</p>
+                                        <p class="mt0 mb0"><strong>Refered By :</strong> {{data.Refered_By}}</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6 right">
+                                <div class="address-wrap">
+                                    <div class="address-title">
+                                        <p class="mb5 mb0"><strong>Bill Date :</strong> {{data.Date}}</p>
+                                        <p class="mb5 mb0"><strong>Age/Sex :</strong> {% if data.Years > 0 %}{{data.Years}}Y {% elif data.Months > 0 %} {{data.Months}}M {% else %} {{data.Days}}D {% endif %} / {{data.Gender}}</p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                           
+                        </div>
+
+                        <!-- invoice table -->
+                        <div class="invo-table">
+                            {% comment %} <center>
+                                <h1><strong>JOB DETAILS</strong></h1>
+                            </center> {% endcomment %}
+                            <table class="table table-bordered invoice-table mb30">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>TEST NAME</th>
+                                        <th>AMOUNT</th>
+                                    </tr>
+                                </thead>
+    
+                                <tbody>
+                                    {% for item in data2 %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{item.Particulars}}</td>
+                                        <td>{{item.Price}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+
+                            <div class="clearfix invoice-head" style="padding-bottom:20px">
+                                <span class="head-logo">
+                                    <div class="col-12"><strong>{{amount_in_words}}</strong></div>
+                                </span>
+    
+                                <span class="head-address">
+                                    <div class="group clearfix right"> 
+                                        <div class="col-12 " style="text-align:left;margin-bottom:10px"><strong>Bill Amount : </strong> ₹{{data.Amount}}</div>
+                                        <div class="col-12 " style="text-align:left;margin-bottom:10px"><strong>Discount : </strong> ₹{{data.Discount}}</div>
+                                        <div class="col-12" style="text-align:left"><strong>Final Amount : </strong> ₹{{data.Final_Amount}}</div>
+                                    </div>
+                                </span>
+                                
+                            </div>
+
+                            <div class="text-right">
+                                <p class="small text-bold">Dr.Chinna</p>
+                                <p class="small text-bold">Authorised Signature</p>
+                            </div>
+                        </div>
+                        <!-- #end invoice table -->
+
+
+
+
+
+                    </div>
+
+
+                </div> <!-- Invoice End -->
+            </div> <!-- #end row -->
+
+        </div> <!-- #end page-wrap -->
+
+    </div>
+
+
+    <script>
+        function printPDF() {
+            const { jsPDF } = window.jspdf;
+            let content = document.getElementById("content");
+            let print = document.getElementById("print");
+            let submit = document.getElementById("submitButton");
+        
+            print.style.display = "none";
+            submit.style.display = "none";
+        
+            html2canvas(content, {
+                scrollY: -window.scrollY,
+                scale: 3 // High resolution capture
+            }).then(canvas => {
+                let imgData = canvas.toDataURL('image/png');
+                let pdf = new jsPDF('p', 'mm', 'a4');
+                let imgWidth = 210;
+                let pageHeight = 297;
+                let imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+                let heightLeft = imgHeight;
+                let position = 0;
+        
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+        
+                while (heightLeft > 0) {
+                    position -= pageHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+        
+                pdf.autoPrint();
+        
+                const pdfBlob = pdf.output('blob');
+                const blobUrl = URL.createObjectURL(pdfBlob);
+                const printWindow = window.open(blobUrl);
+        
+                if (printWindow) {
+                    printWindow.onload = function () {
+                        printWindow.focus();
+                        printWindow.print();
+                    };
+                } else {
+                    alert("Popup blocked! Please allow popups for this website.");
+                }
+            });
+        
+            print.style.display = "inline-block";
+            submit.style.display = "inline-block";
+        }
+                
+    </script>
+        
+
+</body>
+
+</html>
