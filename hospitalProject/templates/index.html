@@ -37,6 +37,39 @@
 	<!-- Match Media polyfill for IE9 -->
 	<!--[if IE 9]> <script src="scripts/ie/matchMedia.js"></script>  <![endif]--> 
 
+<style>
+	.watermark-bg::before {
+	content: "";
+	background-image: url("{% static 'images/ssl_Logo.webp' %}");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	opacity: 0.05;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+	pointer-events: none;
+	}
+	.watermark-bg {
+	position: relative;
+	z-index: 1;
+	}
+
+	/* Headings */
+.watermark-bg h1 {
+  text-align: center;
+  font-weight: 900;
+  font-size: 64px;
+  color: #c7161c; /* Bootstrap primary blue */
+  margin: 10px 0;
+  text-shadow: 1px 1px 2px rgba(0, 123, 255, 0.1);
+}
+</style>
+
+
 	
 </head>
 <body id="app" class="app off-canvas">
@@ -144,7 +177,7 @@
 
 		<div class="content-container fixedHeader nav-expand">
 			<!-- col-left -->
-			<div class="col-sm-12 col-md-11" style="min-height: 65vh; align-content: center;">
+			<div class="col-sm-12 col-md-11 watermark-bg" style="min-height: 85vh; align-content: center;">
 				<h1 style="text-align:center; font-weight:900; font-size:70px ">Welcome</h1>
 				<h1 style="text-align:center; font-weight:900; font-size:70px ">To</h1>
 				<h1 style="text-align:center; font-weight:900; font-size:70px ">SRI SHANMUGAM LAB</h1>
@@ -243,85 +276,5 @@
 	<script src="{% static 'scripts/app.js' %}"></script>
 	<script src="{% static 'scripts/index.init.js' %}"></script>
 
-	{% comment %} <script>
-		// Example list of existing phone numbers (this can come from a database)
-		const existingPhoneNumbers = [
-			{% for num in phone %}
-			"{{num.Phone_No}}",
-			{% endfor %}
-		];
-		const submitButton = document.getElementById("submitButton");
-	
-		console.log(existingPhoneNumbers);
-	
-		document.getElementById("phone").addEventListener("blur", function () {
-			let enteredPhone = this.value.trim(); // Get input value and remove extra spaces
-			let errorSpan = document.getElementById("phoneError");
-	
-			if (enteredPhone.length !== 10 || isNaN(enteredPhone)) {
-				errorSpan.textContent = "Enter a valid 10-digit phone number";
-				errorSpan.style.color = "red";
-				this.style.borderColor = "red";
-				submitButton.disabled = true;
-				alert("Enter a valid 10-digit phone number")
-			} 
-			else if (existingPhoneNumbers.includes(enteredPhone)) {
-				errorSpan.textContent = "Phone number already exists!";
-				errorSpan.style.color = "red";
-				this.style.borderColor = "red";
-				submitButton.disabled = true;
-				alert("Phone number already exists!")
-			} 
-			else {
-				errorSpan.textContent = "";
-				this.style.borderColor = "green";
-				submitButton.disabled = false;
-
-			}
-		});
-	</script> {% endcomment %}
-
-
-	<script>
-		// Example list of existing phone numbers (this can come from a database)
-		const existingPhoneNumbers = [
-			{% for num in phone %}
-			"{{num.Phone_No}}--{{num.Customer_Id}}--{{num.Customer_Name}}",
-			{% endfor %}
-		];
-		const submitButton = document.getElementById("submitButton");
-	
-	
-		document.getElementById("phone").addEventListener("blur", function () {
-			let enteredPhone = this.value.trim(); // Get input value and remove extra spaces
-			let errorSpan = document.getElementById("phoneError");
-	
-			if (enteredPhone.length !== 10 || isNaN(enteredPhone)) {
-				errorSpan.textContent = "Enter a valid 10-digit phone number";
-				errorSpan.style.color = "red";
-				this.style.borderColor = "red";
-				submitButton.disabled = true;
-				{% comment %} alert("Enter a valid 10-digit phone number"); {% endcomment %}
-			} 
-			else {
-				// Check if the entered phone number exists in the array
-				let matchedPhone = existingPhoneNumbers.find(phone => phone.startsWith(enteredPhone));
-	
-				if (matchedPhone) {
-					errorSpan.textContent = `${matchedPhone} already exists!`;
-					errorSpan.style.color = "red";
-					this.style.borderColor = "red";
-					submitButton.disabled = true;
-					alert(`${matchedPhone} already exists!`);
-				} 
-				else {
-					errorSpan.textContent = "";
-					this.style.borderColor = "green";
-					submitButton.disabled = false;
-				}
-			}
-		});
-	</script>
-	
 </body>
 </html>
