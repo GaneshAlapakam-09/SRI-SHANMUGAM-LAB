@@ -166,7 +166,10 @@
 			<div class="panel panel-lined table-responsive panel-hovered mb20 data-table" style="padding-bottom: 20px">
 				<div class="panel-heading addbill-heading">
 					<div>Bills List</div>
-					<div><a class="btn btn-primary mr5" href="{% url "addbill" %}">Add Bill</a></div>
+					<div>
+						<a class="btn btn-primary mr5" href="{% url "addbill" %}">Add Bill</a>
+						<a class="btn btn-primary mr5" href="{% url "export" %}">Export</a>
+					</div>
 				</div>
 				<div class="panel-body">
 					<div class="small text-bold left mt5">
@@ -202,10 +205,6 @@
 													</th>
 													<th>
 													 Name
-														 
-													</th>
-													<th>
-                                                        DOB
 														 
 													</th>
 													<th>
@@ -382,18 +381,17 @@
 					Bill_Id: "{{ item.Bill_Id|escapejs }}", 
 					Date: "{{ item.Date|escapejs }}", 
 					Patient_Name: "{{ item.Title|escapejs }}.{{ item.Name|escapejs }} {{ item.Last_Name|escapejs }}", 
-					DOB: "{{ item.DOB|escapejs }}",
 					Age: "{{ item.Years|escapejs |upper }}/{{ item.Months|escapejs }}/{{ item.Days|escapejs }}",
 					Gender: "{{ item.Gender|escapejs }}", 
 					Phone: "{{ item.Phone|escapejs }}", 
-					Alt_Phone: "{{ item.Alt_Phone|escapejs }}", 
+					Alt_Phone: "{% if item.Alt_Phone == 0 %}N/A {% else %} {{ item.Alt_Phone|escapejs }} {% endif %}", 
 					Email: "{{ item.Email|escapejs }}",
 					Refered_By: "{{ item.Refered_By|escapejs }}",
 					Address: "{{ item.Address|escapejs }}",
 					Discount: "{{ item.Discount|escapejs }}", 
 					Amount: "{{ item.Amount|escapejs }}",
 					action: `<div class="btn-group list-cust">
-								<a title="Bill Details" href=""><button type="button" class="btn btn-default ion icon fa fa-list-ol"></button></a>
+								{% comment %} <a title="Bill Details" href=""><button type="button" class="btn btn-default ion icon fa fa-list-ol"></button></a> {% endcomment %}
 								<a href="{% url 'print_bill' item.Bill_Id %}"><button type="button" class="btn btn-default fa fa-print icon  waves-effect"></button></a>
 							</div>`
 					
@@ -408,7 +406,6 @@
 					{ data: "Bill_Id" },
 					{ data: "Date" },
 					{ data: "Patient_Name" },
-					{ data: "DOB" },
 					{ data: "Age" },
 					{ data: "Gender" },
 					{ data: "Phone" },

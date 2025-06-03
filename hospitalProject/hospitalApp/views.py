@@ -3,8 +3,11 @@ from django.http import JsonResponse
 from django.shortcuts import render,redirect
 
 from num2words import num2words
+from datetime import datetime
 
 from . models import Billing_Details, Billing_Master,Test_Master
+import openpyxl
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -16,10 +19,9 @@ def add_bill(request):
         title = data.get('title')
         name = data.get('name')
         last_name = data.get('last_name')
-        dob = data.get('dob')
-        years = data.get('years')
-        months = data.get('months')
-        days = data.get('days')
+        years = data.get('years') if data.get('years') else 0
+        months = data.get('months') if data.get('months') else 0
+        days = data.get('days') if data.get('days') else 0
         gender = data.get('gender')
         phone = data.get('phone')
         alt_phone = int(data.get('alt_phone')) if data.get('alt_phone') else 0
@@ -29,7 +31,10 @@ def add_bill(request):
         discount = data.get('discount')
         amount = data.get('grand_total')
         final_amount = int(amount) - int(discount)
+        advance = data.get('advance')
+        date = datetime.now()
 
+        time_str = date.strftime("%d-%m-%Y %I:%M%p")
 
         items = data.get('items', [])
 
@@ -37,21 +42,22 @@ def add_bill(request):
         last_bill = Billing_Master.objects.order_by('-S_No').first()
         if last_bill:
             new_s_no = last_bill.S_No + 1
-            new_bill = f"BILL{(int(last_bill.Bill_Id[4:]) + 1):04d}"
+            new_bill = f"SSL{(int(last_bill.Bill_Id[3:]) + 1):04d}"
         else:
             new_s_no = 1
-            new_bill = 'BILL0001' 
+            new_bill = 'SSL0001' 
         bill=Billing_Master.objects.create(
             S_No = new_s_no, 
+            Advance = advance,
             Bill_Id = new_bill, 
+            Date = time_str,
             Title = title, 
             Name = name, 
             Last_Name = last_name, 
-            DOB = dob, 
             Years = years, 
             Months = months, 
             Days = days, 
-            Gender = gender, 
+            Gender = gender,
             Phone = phone, 
             Alt_Phone = alt_phone,
             Email=email, 
@@ -65,6 +71,7 @@ def add_bill(request):
         for item in items:
             Billing_Details.objects.create(
                 Bill_Id = bill,
+                Date = time_str,
                 Particulars = item.get('particular'),
                 Price = item.get('price')
             )
@@ -110,4 +117,39 @@ def list_test(request):
     context = {'data':data}
     return render(request,'list_test.html',context)
 
+def edit_test(request,id):
+    if request.method=="POST":
+        particulars = request.POST['particulars']
+        price = request.POST['price']
+        Test_Master.objects.filter(Test_Id = id).update(Test_Name = particulars, Price = price)
+        return redirect('listtest')
 
+    data = Test_Master.objects.get(Test_Id = id)
+    context = {'data':data}
+    return render(request,'edit_test.html',context)
+
+
+
+
+def export_to_excel(request):
+    # Create a workbook and worksheet
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Billing Data"
+
+    # Write the header
+    headers = [field.name for field in Billing_Master._meta.fields]
+    ws.append(headers)
+
+    # Write data rows
+    for obj in Billing_Master.objects.all():
+        row = [getattr(obj, field.name) for field in Billing_Master._meta.fields]
+        ws.append(row)
+
+    # Create a response
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=Billing_data.xlsx'
+
+    # Save the workbook to the response
+    wb.save(response)
+    return response

@@ -235,7 +235,7 @@
 								
 							<!-- Name -->
 							<div class="form-group">
-								<label class="col-md-3 control-label">Name</label>
+								<label class="col-md-3 control-label">Name *</label>
 								<div class="col-md-1">
 									<select name="title" id="title" class="dropdown form-dropdown" required>
 										<option value=""readonly>Title</option>
@@ -253,33 +253,33 @@
 									<input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
 								</div>
 							</div>
-                            <!-- DOB -->
+                            {% comment %} <!-- DOB -->
 							<div class="form-group">
 								<label class="col-md-3 control-label">DOB</label>
 								<div class="col-md-9">
 									<input type="date" id="dob" class="form-control" placeholder="DOB" name="dob" required >
 								</div>
-							</div>
+							</div> {% endcomment %}
                             <!-- AGE -->
 							<div class="form-group">
 								<label class="col-md-3 control-label">Age</label>
 								<div class="col-md-3">
-									<input type="number" class="form-control" placeholder="Years" name="years" id="years" readonly>
+									<input type="number" class="form-control" placeholder="Years" name="years" id="years">
+								</div>
+							<div class="col-md-3">
+									<input type="number" class="form-control" placeholder="Months" name="months" id="months">
 								</div>
 								<div class="col-md-3">
-									<input type="number" class="form-control" placeholder="Months" name="months" id="months" readonly>
-								</div>
-								<div class="col-md-3">
-									<input type="number" class="form-control" placeholder="Days" name="days" id="days" readonly>
+									<input type="number" class="form-control" placeholder="Days" name="days" id="days">
 								</div>
 							</div>
 
 							<!-- Gender -->
 							<div class="form-group">
-								<label class="col-md-3 control-label">Gender</label>
+								<label class="col-md-3 control-label">Gender *</label>
 								<div class="col-md-9">
 									<select name="gender" id="gender" class="dropdown form-dropdown" required>
-										<option value="" disabled>Gender</option>
+										<option value="" disabled selected>Gender</option>
 										<option value="Male">Male</option>
 										<option value="Female">Female</option>
 										<option value="Others">Others</option>
@@ -289,7 +289,7 @@
 
 							<!-- Phone -->
 							<div class="form-group">
-								<label class="col-md-3 control-label">Phone</label>
+								<label class="col-md-3 control-label">Phone *</label>
 								<div class="col-md-4">
 									<input type="number" class="form-control" placeholder="Phone No." id="phone" name="phone" required>
 									<span id="phoneError"></span>
@@ -308,9 +308,9 @@
 							</div>
 							<!-- Refered By -->
 							<div class="form-group">
-								<label class="col-md-3 control-label">Refered By</label>
+								<label class="col-md-3 control-label">Refered By *</label>
 								<div class="col-md-9">
-									<input type="text" class="form-control" placeholder="Refered By" name="reference" >
+									<input type="text" class="form-control" placeholder="Refered By" name="reference" required>
 								</div>
 							</div>
 						
@@ -491,38 +491,6 @@
 	<script src="{% static 'scripts/index.init.js' %}"></script>
 
 	<script>
-		window.onload = function () {
-		  // Age calculation on DOB change
-		  const dobInput = document.getElementById('dob');
-		  if (dobInput) {
-			dobInput.addEventListener('change', function () {
-			  const dob = new Date(this.value);
-			  const today = new Date();
-	  
-			  if (isNaN(dob.getTime())) return; // invalid date
-	  
-			  let years = today.getFullYear() - dob.getFullYear();
-			  let months = today.getMonth() - dob.getMonth();
-			  let days = today.getDate() - dob.getDate();
-	  
-			  if (days < 0) {
-				months--;
-				const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-				days += prevMonth.getDate();
-			  }
-	  
-			  if (months < 0) {
-				years--;
-				months += 12;
-			  }
-	  
-			  document.getElementById('years').value = years;
-			  document.getElementById('months').value = months;
-			  document.getElementById('days').value = days;
-			});
-		  }
-	  
-
 		  // Phone number validation
 		  const phoneInput = document.getElementById('phone');
 		  const phoneError = document.getElementById('phoneError');

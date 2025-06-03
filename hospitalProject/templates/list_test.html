@@ -204,6 +204,10 @@
 														 Price
 														 
 													</th>
+													<th>
+														 Action
+														 
+													</th>
 													
 												</tr>
 											</thead>
@@ -336,6 +340,9 @@
 					Test_Id: "{{ item.Test_Id|escapejs }}", 
 					Test_Name: "{{ item.Test_Name|escapejs }}", 
 					Price: "{{ item.Price|escapejs }}", 
+					Action: `<div class="btn-group list-cust">
+								<a href="{% url 'edit_test' item.Test_Id %}"><button type="button" class="btn btn-default fa fa-pencil icon  waves-effect"></button></a>
+							</div>`
 			
 				}{% if not loop.last %},{% endif %}
 				{% endfor %}
@@ -347,7 +354,8 @@
 					{ data: "S_No" },
 					{ data: "Test_Id" },
 					{ data: "Test_Name" },
-					{ data: "Price" }
+					{ data: "Price" },
+					{ data: "Action" }
 
 
 				],

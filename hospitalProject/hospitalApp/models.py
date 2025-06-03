@@ -7,10 +7,9 @@ class Billing_Master(models.Model):
     Title = models.CharField(max_length=50)
     Name = models.CharField(max_length=50)
     Last_Name = models.CharField(max_length=50)
-    DOB = models.DateField(auto_now=False, auto_now_add=False)
-    Years = models.IntegerField()
-    Months = models.IntegerField()
-    Days = models.IntegerField()
+    Years = models.IntegerField(null=True)
+    Months = models.IntegerField(null=True)
+    Days = models.IntegerField(null=True)
     Gender = models.CharField(max_length=15)
     Phone = models.BigIntegerField()
     Alt_Phone = models.BigIntegerField()
@@ -19,14 +18,15 @@ class Billing_Master(models.Model):
     Address = models.CharField( max_length=50)
     Discount = models.FloatField()
     Final_Amount = models.FloatField(default=0)
+    Advance = models.FloatField()
     Amount = models.FloatField()
-    Date = models.DateField(auto_now=True, auto_now_add=False)
+    Date =  models.CharField(null=True, max_length=50)
 
 class Billing_Details(models.Model):
     Bill_Id = models.ForeignKey("hospitalApp.Billing_Master", on_delete=models.CASCADE)
     Particulars = models.CharField( max_length=50)
     Price = models.FloatField()
-    Date = models.DateField(auto_now=True, auto_now_add=False)
+    Date = models.CharField(null=True, max_length=50)
 
 
 class Test_Master(models.Model):
