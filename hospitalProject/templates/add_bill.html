@@ -102,6 +102,18 @@
         .autocomplete-items div:hover {
             background-color: #f1f1f1;
         }
+		.is-invalid {
+		border: 2px solid red;
+		background-color: #ffe6e6;
+		transition: all 0.3s ease;
+		}
+		select.is-invalid {
+		border: 2px solid red !important;
+		background-color: #ffe6e6 !important;
+		appearance: none; /* removes default OS style (optional) */
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		}
 	</style>
 </head>
 <body id="app" class="app off-canvas">
